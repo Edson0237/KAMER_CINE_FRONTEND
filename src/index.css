@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/**
+ * Palette de couleurs KAMER CINÉ TALENTS MANAGER.
+ * Définie via @theme pour être disponible dans toutes les classes Tailwind
+ * (ex: bg-kct-gold, text-kct-noir, border-kct-beige).
+ */
+@theme {
+  --color-kct-gold: #B8860B;
+  --color-kct-noir: #1A1A1A;
+  --color-kct-beige: #F5F0E1;
+  --color-kct-green: #3F9142;
+  --color-kct-yellow: #C9A227;
+  --color-kct-red: #C0392B;
+}

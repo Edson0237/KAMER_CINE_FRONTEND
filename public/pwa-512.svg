@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="64" fill="#1A1A1A"/>
+  <rect x="64" y="128" width="384" height="256" rx="16" fill="none" stroke="#B8860B" stroke-width="8"/>
+  <circle cx="128" cy="192" r="14" fill="#B8860B"/>
+  <circle cx="384" cy="192" r="14" fill="#B8860B"/>
+  <circle cx="128" cy="320" r="14" fill="#B8860B"/>
+  <circle cx="384" cy="320" r="14" fill="#B8860B"/>
+  <text x="256" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#B8860B" text-anchor="middle">KCT</text>
+</svg>
