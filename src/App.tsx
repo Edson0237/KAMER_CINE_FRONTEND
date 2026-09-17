@@ -28,6 +28,7 @@ import { EquipeManagementScreen } from '@/modules/site-public/components/EquipeM
 import { PartenaireManagementScreen } from '@/modules/site-public/components/PartenaireManagementScreen';
 import { CandidatureManagementScreen } from '@/modules/site-public/components/CandidatureManagementScreen';
 import { ContactManagementScreen } from '@/modules/site-public/components/ContactManagementScreen';
+import { EvenementManagementScreen } from '@/modules/site-public/components/EvenementManagementScreen';
 import { ForcePasswordChangeScreen } from '@/modules/auth/components/ForcePasswordChangeScreen';
 import { ProfileScreen } from '@/modules/auth/components/ProfileScreen';
 
@@ -84,6 +85,7 @@ function App() {
             <Route path="/site/partenaires" element={<NiveauGuard niveaux={[1]}><PartenaireManagementScreen /></NiveauGuard>} />
             <Route path="/site/candidatures" element={<NiveauGuard niveaux={[1]}><CandidatureManagementScreen /></NiveauGuard>} />
             <Route path="/site/contact" element={<NiveauGuard niveaux={[1]}><ContactManagementScreen /></NiveauGuard>} />
+            <Route path="/site/evenements" element={<NiveauGuard niveaux={[1]}><EvenementManagementScreen /></NiveauGuard>} />
           </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

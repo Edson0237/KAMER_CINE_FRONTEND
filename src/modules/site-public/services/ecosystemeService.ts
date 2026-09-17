@@ -12,6 +12,8 @@ import type {
   CreateMembreEquipeRequest,
   CreatePartenaireRequest,
   TraiterCandidatureRequest,
+  Evenement,
+  CreateEvenementRequest,
 } from '../types';
 
 export const ecosystemeService = {
@@ -126,5 +128,26 @@ export const ecosystemeService = {
   async marquerMessageTraite(id: string): Promise<ContactMessage> {
     const { data } = await apiClient.put<ContactMessage>(`/ecosysteme/contact/${id}/traiter`);
     return data;
+  },
+
+  // ==================== ÉVÉNEMENTS ====================
+
+  async listEvenements(): Promise<Evenement[]> {
+    const { data } = await apiClient.get<Evenement[]>('/ecosysteme/evenements');
+    return data;
+  },
+
+  async createEvenement(req: CreateEvenementRequest): Promise<Evenement> {
+    const { data } = await apiClient.post<Evenement>('/ecosysteme/evenements', req);
+    return data;
+  },
+
+  async updateEvenement(id: string, req: CreateEvenementRequest): Promise<Evenement> {
+    const { data } = await apiClient.put<Evenement>(`/ecosysteme/evenements/${id}`, req);
+    return data;
+  },
+
+  async deleteEvenement(id: string): Promise<void> {
+    await apiClient.delete(`/ecosysteme/evenements/${id}`);
   },
 };

@@ -99,3 +99,32 @@ export interface TraiterCandidatureRequest {
   statut: 'acceptee' | 'refusee';
   communeId?: string;
 }
+
+export interface Evenement {
+  id: string;
+  titre: string;
+  description: string | null;
+  type: string;
+  dateDebut: string;
+  dateFin: string | null;
+  lieu: string | null;
+  adresse: string | null;
+  communeId: string | null;
+  imageUrl: string | null;
+  capacite: number | null;
+  statut: string;
+}
+
+export interface CreateEvenementRequest {
+  titre: string;
+  description?: string;
+  type: string;
+  dateDebut: string;
+  dateFin?: string;
+  lieu?: string;
+  adresse?: string;
+  communeId?: string;
+  imageUrl?: string;
+  capacite?: number;
+  statut?: string;
+}

@@ -4,7 +4,7 @@ import {
   LayoutDashboard, Map, MapPin, Users, GraduationCap, CalendarCheck,
   ClipboardList, Award, LogOut, PanelLeftClose, PanelLeftOpen,
   Moon, Sun, Menu, ShieldAlert, KeyRound, UserCog, Globe,
-  Newspaper, HelpCircle, Handshake, UserPlus, Mail, Settings, Flag,
+  Newspaper, HelpCircle, Handshake, UserPlus, Mail, Settings, Flag, CalendarDays,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
@@ -75,6 +75,7 @@ const NAV_GROUPS: NavGroup[] = [
       { to: '/site/partenaires', label: 'Partenaires', icon: Handshake, permission: 'site_public:read' },
       { to: '/site/candidatures', label: 'Candidatures', icon: UserPlus, permission: 'candidature:read' },
       { to: '/site/contact', label: 'Messages', icon: Mail, permission: 'contact:read' },
+      { to: '/site/evenements', label: 'Événements', icon: CalendarDays, permission: 'site_public:read' },
     ],
   },
 ];
