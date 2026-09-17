@@ -7,6 +7,7 @@ import type {
   Partenaire,
   CandidaturePublique,
   ContactMessage,
+  Evenement,
 } from '../types';
 
 export function useActualites() {
@@ -129,6 +130,28 @@ export function useContactMessages() {
     setError(null);
     try {
       const result = await ecosystemeService.listMessages();
+      setData(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erreur de chargement');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+  return { data, loading, error, reload: load };
+}
+
+export function useEvenements() {
+  const [data, setData] = useState<Evenement[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const result = await ecosystemeService.listEvenements();
       setData(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur de chargement');
