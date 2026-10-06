@@ -1,26 +1,34 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 import { authService } from '@/modules/auth/services/authService';
-import type { AuthUser, LoginRequest, Login2FAResponse, Verify2FARequest } from '@/modules/auth/types';
+import type { AuthUser, LoginRequest, OtpRequiredResponse, VerifyOtpRequest } from '@/modules/auth/types';
 
 interface AuthContextValue {
   user: AuthUser | null;
   loading: boolean;
   error: string | null;
-  login: (request: LoginRequest) => Promise<AuthUser | Login2FAResponse>;
-  verify2FA: (request: Verify2FARequest) => Promise<AuthUser>;
-  logout: () => void;
+  login: (request: LoginRequest) => Promise<AuthUser | OtpRequiredResponse>;
+  verifyOtp: (request: VerifyOtpRequest) => Promise<AuthUser>;
+  logout: () => Promise<void>;
   hasPermission: (code: string) => boolean;
   clearMustChangePassword: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function persistSession(token: string, refreshToken: string, user: AuthUser) {
+  localStorage.setItem('kct_token', token);
+  localStorage.setItem('kct_refresh_token', refreshToken);
+  localStorage.setItem('kct_user', JSON.stringify(user));
+}
+
 /**
  * Fournisseur de contexte d'authentification.
  *
  * <p>Expose l'utilisateur courant, les actions de login/logout, l'état de
  * chargement et un helper {@link hasPermission} à tous les composants enfants
- * via {@link useAuthContext}.</p>
+ * via {@link useAuthContext}. {@code hasPermission} se contente de lire la
+ * liste `permissions` reçue de l'API — aucune décision de droits n'est prise
+ * côté client (§3, "affiche/masque, ne décide jamais seul").</p>
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() => {
@@ -30,16 +38,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const login = useCallback(async (request: LoginRequest): Promise<AuthUser | Login2FAResponse> => {
+  const login = useCallback(async (request: LoginRequest): Promise<AuthUser | OtpRequiredResponse> => {
     setLoading(true);
     setError(null);
     try {
       const result = await authService.login(request);
-      if ('twoFactorRequired' in result) {
+      if ('otpRequired' in result) {
         return result;
       }
-      localStorage.setItem('kct_token', result.token);
-      localStorage.setItem('kct_user', JSON.stringify(result.user));
+      persistSession(result.token, result.refreshToken, result.user);
       setUser(result.user);
       return result.user;
     } catch (err) {
@@ -51,17 +58,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const verify2FA = useCallback(async (request: Verify2FARequest): Promise<AuthUser> => {
+  const verifyOtp = useCallback(async (request: VerifyOtpRequest): Promise<AuthUser> => {
     setLoading(true);
     setError(null);
     try {
-      const { token, user: authUser } = await authService.verify2FA(request);
-      localStorage.setItem('kct_token', token);
-      localStorage.setItem('kct_user', JSON.stringify(authUser));
-      setUser(authUser);
-      return authUser;
+      const result = await authService.verifyOtp(request);
+      persistSession(result.token, result.refreshToken, result.user);
+      setUser(result.user);
+      return result.user;
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Code 2FA invalide';
+      const message = err instanceof Error ? err.message : 'Code invalide ou expiré';
       setError(message);
       throw err;
     } finally {
@@ -69,8 +75,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const logout = useCallback(() => {
-    authService.logout();
+  const logout = useCallback(async () => {
+    await authService.logout();
     setUser(null);
   }, []);
 
@@ -90,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, loading, error, login, verify2FA, logout, hasPermission, clearMustChangePassword }}
+      value={{ user, loading, error, login, verifyOtp, logout, hasPermission, clearMustChangePassword }}
     >
       {children}
     </AuthContext.Provider>

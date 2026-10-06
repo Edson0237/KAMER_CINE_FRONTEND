@@ -29,7 +29,7 @@ export function ApprenantList() {
   const {
     apprenants, loading, error, page, setPage, totalPages, totalElements, size,
     search, setSearch, create, update, remove,
-  } = useApprenantsPage(user?.territoireId);
+  } = useApprenantsPage(user?.territoireId ?? undefined);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Apprenant | null>(null);

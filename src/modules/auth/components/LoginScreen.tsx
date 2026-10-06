@@ -1,25 +1,27 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthContext } from '@/shared/auth/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Loader2, Mail, Lock } from 'lucide-react';
-import type { Login2FAResponse } from '@/modules/auth/types';
+import { Loader2, User, Lock } from 'lucide-react';
+import type { OtpRequiredResponse } from '@/modules/auth/types';
 
 export function LoginScreen() {
+  const { t } = useTranslation();
   const { login, loading, error } = useAuthContext();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [identifiant, setIdentifiant] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const result = await login({ email, password });
-      if (result && typeof result === 'object' && 'twoFactorRequired' in result) {
-        const twoFA = result as Login2FAResponse;
-        navigate('/verify-2fa', { state: { userId: twoFA.userId, email: twoFA.email } });
+      const result = await login({ identifiant, password });
+      if (result && typeof result === 'object' && 'otpRequired' in result) {
+        const otp = result as OtpRequiredResponse;
+        navigate('/verify-2fa', { state: { userId: otp.userId, contexte: otp.contexte, identifiant } });
         return;
       }
       navigate('/dashboard');
@@ -37,39 +39,38 @@ export function LoginScreen() {
         }} />
 
         <div className="relative z-10 flex items-center gap-3">
-          <img src="/kamer_cine_talents.jpg" alt="KAMER CINÉ TALENTS" className="w-14 h-14 rounded-xl object-cover shadow-lg" />
+          <img src="/kamer_cine_talents.jpg" alt={t('auth.branding.appName')} className="w-14 h-14 rounded-xl object-cover shadow-lg" />
           <div>
-            <h1 className="text-white font-bold text-xl leading-tight">KAMER CINÉ TALENTS</h1>
-            <p className="text-kct-gold text-sm font-medium">Manager Web</p>
+            <h1 className="text-white font-bold text-xl leading-tight">{t('auth.branding.appName')}</h1>
+            <p className="text-kct-gold text-sm font-medium">{t('auth.branding.tagline')}</p>
           </div>
         </div>
 
         <div className="relative z-10 space-y-6">
-          <h2 className="text-white text-4xl font-bold leading-tight">
-            Pilotage national de la<br />formation aux métiers<br />du cinéma
+          <h2 className="text-white text-4xl font-bold leading-tight whitespace-pre-line">
+            {t('auth.login.brandingTitle')}
           </h2>
           <p className="text-gray-300 text-lg max-w-md">
-            360 communes, 7 niveaux hiérarchiques, un seul outil pour
-            orchestrer tout le programme de formation.
+            {t('auth.login.brandingSubtitle')}
           </p>
           <div className="flex gap-8 pt-4">
             <div>
               <div className="text-3xl font-bold text-kct-gold">360</div>
-              <div className="text-gray-400 text-sm">Communes</div>
+              <div className="text-gray-400 text-sm">{t('auth.branding.statCommunes')}</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-kct-gold">7</div>
-              <div className="text-gray-400 text-sm">Niveaux</div>
+              <div className="text-gray-400 text-sm">{t('auth.branding.statNiveaux')}</div>
             </div>
             <div>
               <div className="text-3xl font-bold text-kct-gold">10</div>
-              <div className="text-gray-400 text-sm">Régions</div>
+              <div className="text-gray-400 text-sm">{t('auth.branding.statRegions')}</div>
             </div>
           </div>
         </div>
 
         <div className="relative z-10 text-gray-500 text-sm">
-          © 2026 KAMER CINÉ TALENTS — Tous droits réservés
+          {t('auth.branding.copyright')}
         </div>
       </div>
 
@@ -78,29 +79,29 @@ export function LoginScreen() {
         <div className="w-full max-w-md">
           {/* Logo mobile */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <img src="/kamer_cine_talents.jpg" alt="KAMER CINÉ TALENTS" className="w-12 h-12 rounded-xl object-cover shadow-lg" />
+            <img src="/kamer_cine_talents.jpg" alt={t('auth.branding.appName')} className="w-12 h-12 rounded-xl object-cover shadow-lg" />
             <div>
-              <h1 className="text-kct-noir font-bold text-lg leading-tight">KAMER CINÉ TALENTS</h1>
-              <p className="text-kct-gold text-sm font-medium">Manager Web</p>
+              <h1 className="text-kct-noir font-bold text-lg leading-tight">{t('auth.branding.appName')}</h1>
+              <p className="text-kct-gold text-sm font-medium">{t('auth.branding.tagline')}</p>
             </div>
           </div>
 
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-kct-noir">Connexion</h2>
-            <p className="text-gray-600 mt-1">Accédez à votre espace de pilotage</p>
+            <h2 className="text-2xl font-bold text-kct-noir">{t('auth.login.title')}</h2>
+            <p className="text-gray-600 mt-1">{t('auth.login.subtitle')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-kct-noir font-medium">Email</Label>
+              <Label htmlFor="identifiant" className="text-kct-noir font-medium">{t('auth.login.identifiant')}</Label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="exemple@kamer-cinetalents.cm"
+                  id="identifiant"
+                  type="text"
+                  value={identifiant}
+                  onChange={(e) => setIdentifiant(e.target.value)}
+                  placeholder={t('auth.login.identifiantPlaceholder')}
                   required
                   className="pl-10 bg-white border-gray-300"
                 />
@@ -109,9 +110,9 @@ export function LoginScreen() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-kct-noir font-medium">Mot de passe</Label>
+                <Label htmlFor="password" className="text-kct-noir font-medium">{t('auth.login.password')}</Label>
                 <Link to="/forgot-password" className="text-sm text-kct-gold hover:underline font-medium">
-                  Mot de passe oublié ?
+                  {t('auth.login.forgotPassword')}
                 </Link>
               </div>
               <div className="relative">
@@ -136,16 +137,16 @@ export function LoginScreen() {
               {loading ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Connexion...
+                  {t('auth.login.submitting')}
                 </>
               ) : (
-                'Se connecter'
+                t('auth.login.submit')
               )}
             </Button>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-6">
-            Pas encore de compte ? Contactez l'administrateur de votre région.
+            {t('auth.login.noAccount')}
           </p>
         </div>
       </div>

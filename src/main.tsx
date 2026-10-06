@@ -1,6 +1,7 @@
 import { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import '@/shared/i18n/i18n'
 import App from './App.tsx'
 import { Preloader } from '@/shared/components/Preloader'
 import { registerSW } from 'virtual:pwa-register'

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ShieldAlert } from 'lucide-react';
 import { useAuthContext } from '@/shared/auth/AuthContext';
 import { ChangePasswordForm } from './ChangePasswordForm';
@@ -10,6 +11,7 @@ import { ChangePasswordForm } from './ChangePasswordForm';
  * ce changement n'est pas effectué.
  */
 export function ForcePasswordChangeScreen() {
+  const { t } = useTranslation();
   const { user, clearMustChangePassword } = useAuthContext();
   const navigate = useNavigate();
 
@@ -25,10 +27,9 @@ export function ForcePasswordChangeScreen() {
           <div className="p-3 rounded-full bg-kct-gold/10 mb-3">
             <ShieldAlert className="h-8 w-8 text-kct-gold" />
           </div>
-          <h1 className="text-xl font-bold text-kct-noir dark:text-gray-100">Changement de mot de passe requis</h1>
+          <h1 className="text-xl font-bold text-kct-noir dark:text-gray-100">{t('auth.forcePasswordChange.title')}</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            Bonjour {user?.nom}. Votre compte utilise un mot de passe temporaire.
-            Vous devez le changer avant de continuer.
+            {t('auth.forcePasswordChange.greeting', { nom: user?.nom ?? '' })}
           </p>
         </div>
         <ChangePasswordForm onSuccess={handleSuccess} />

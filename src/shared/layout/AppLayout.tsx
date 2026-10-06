@@ -1,88 +1,20 @@
 import { NavLink, useNavigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthContext } from '@/shared/auth/AuthContext';
-import {
-  LayoutDashboard, Map, MapPin, Users, GraduationCap, CalendarCheck,
-  ClipboardList, Award, LogOut, PanelLeftClose, PanelLeftOpen,
-  Moon, Sun, Menu, ShieldAlert, KeyRound, UserCog, Globe,
-  Newspaper, HelpCircle, Handshake, UserPlus, Mail, Settings, Flag, CalendarDays, Calendar,
-} from 'lucide-react';
+import { LogOut, PanelLeftClose, PanelLeftOpen, Moon, Sun, Menu } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { territoireService } from '@/modules/territoire/services/territoireService';
 import { OfflineBanner } from '@/shared/components/OfflineBanner';
 import { InstallPrompt } from '@/shared/components/InstallPrompt';
 import { NotificationBell } from '@/shared/components/NotificationBell';
-
-type NavItem = {
-  to: string;
-  label: string;
-  icon: typeof LayoutDashboard;
-  permission: string;
-};
-
-type NavGroup = {
-  heading: string;
-  items: NavItem[];
-};
-
-const NAV_GROUPS: NavGroup[] = [
-  {
-    heading: 'Pilotage',
-    items: [
-      { to: '/dashboard', label: 'Tableau de bord', icon: LayoutDashboard, permission: 'pilotage:read' },
-      { to: '/carte', label: 'Carte du Cameroun', icon: Map, permission: 'territoire:read' },
-    ],
-  },
-  {
-    heading: 'Territoire',
-    items: [
-      { to: '/territoires', label: 'Territoires', icon: MapPin, permission: 'territoire:read' },
-    ],
-  },
-  {
-    heading: 'Formation',
-    items: [
-      { to: '/apprenants', label: 'Apprenants', icon: Users, permission: 'apprenant:read' },
-      { to: '/encadreurs', label: 'Encadreurs', icon: GraduationCap, permission: 'encadreur:read' },
-      { to: '/sessions', label: 'Sessions', icon: CalendarCheck, permission: 'session:read' },
-      { to: '/presences', label: 'Présences', icon: ClipboardList, permission: 'presence:read' },
-      { to: '/resultats', label: 'Résultats', icon: Award, permission: 'resultat:read' },
-      { to: '/attestations', label: 'Attestations', icon: Award, permission: 'attestation:read' },
-    ],
-  },
-  {
-    heading: 'Administration',
-    items: [
-      { to: '/admin/overview', label: 'Vue d\'ensemble', icon: Globe, permission: 'audit:read' },
-      { to: '/admin/audit', label: 'Journal d\'audit', icon: ShieldAlert, permission: 'audit:read' },
-      { to: '/admin/users', label: 'Utilisateurs', icon: UserCog, permission: 'utilisateur:read' },
-      { to: '/admin/roles', label: 'Rôles & permissions', icon: KeyRound, permission: 'role:read' },
-    ],
-  },
-  {
-    heading: 'Administration système',
-    items: [
-      { to: '/admin/parametres', label: 'Paramètres système', icon: Settings, permission: 'parametre:read' },
-      { to: '/admin/feature-flags', label: 'Feature flags', icon: Flag, permission: 'feature_flag:read' },
-    ],
-  },
-  {
-    heading: 'Site Public',
-    items: [
-      { to: '/site/actualites', label: 'Actualités', icon: Newspaper, permission: 'site_public:read' },
-      { to: '/site/faq', label: 'FAQ', icon: HelpCircle, permission: 'site_public:read' },
-      { to: '/site/equipe', label: 'Équipe', icon: Users, permission: 'site_public:read' },
-      { to: '/site/partenaires', label: 'Partenaires', icon: Handshake, permission: 'site_public:read' },
-      { to: '/site/evenements', label: 'Événements', icon: Calendar, permission: 'site_public:read' },
-      { to: '/site/candidatures', label: 'Candidatures', icon: UserPlus, permission: 'candidature:read' },
-      { to: '/site/contact', label: 'Messages', icon: Mail, permission: 'contact:read' },
-      { to: '/site/evenements', label: 'Événements', icon: CalendarDays, permission: 'site_public:read' },
-    ],
-  },
-];
+import { MaintenanceBanner } from '@/shared/components/MaintenanceBanner';
+import { NAV_GROUPS, EXTRA_PAGE_TITLES, isNavItemVisible, navKey, groupKey, type NavItem } from './navigation';
+import { LanguageSwitcher } from '@/shared/components/LanguageSwitcher';
+import { useTranslation } from 'react-i18next';
 
 export function AppLayout() {
   const { user, logout, hasPermission } = useAuthContext();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
@@ -106,8 +38,8 @@ export function AppLayout() {
     }
   }, [isDark]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
@@ -119,7 +51,7 @@ export function AppLayout() {
     items: NavItem[],
     onNavigate?: () => void,
   ) => {
-    const visible = items.filter((item) => hasPermission(item.permission));
+    const visible = items.filter((item) => isNavItemVisible(item, hasPermission));
     return visible.map((item) => (
       <NavLink
         key={item.to}
@@ -139,7 +71,7 @@ export function AppLayout() {
         </div>
         {!collapsed && (
           <span className="text-sm font-medium transition-opacity duration-200 whitespace-nowrap">
-            {item.label}
+            {t('nav.items.' + navKey(item.to), { defaultValue: item.label })}
           </span>
         )}
       </NavLink>
@@ -177,13 +109,13 @@ export function AppLayout() {
           {/* Nav */}
           <div className="overflow-y-auto h-[calc(100vh-180px)] flex flex-col gap-4 mt-3 px-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {NAV_GROUPS.map((group, idx) => {
-              const visibleItems = group.items.filter((item) => hasPermission(item.permission));
+              const visibleItems = group.items.filter((item) => isNavItemVisible(item, hasPermission));
               if (visibleItems.length === 0) return null;
               return (
                 <div key={idx} className="flex flex-col gap-0.5">
                   {!collapsed && group.heading && (
                     <span className="px-3 mb-1 text-[11px] font-semibold tracking-wider text-gray-400 dark:text-gray-500 uppercase">
-                      {group.heading}
+                      {t('nav.groups.' + groupKey(group.heading), { defaultValue: group.heading })}
                     </span>
                   )}
                   {renderNavItems(group.items)}
@@ -207,7 +139,7 @@ export function AppLayout() {
               </div>
               {!collapsed && (
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300 transition-opacity duration-200">
-                  Réduire
+                  {t('layout.collapse')}
                 </span>
               )}
             </button>
@@ -232,13 +164,13 @@ export function AppLayout() {
               </div>
               <nav className="mt-3 px-2 flex flex-col gap-4 overflow-y-auto h-[calc(100vh-80px)]">
                 {NAV_GROUPS.map((group, idx) => {
-                  const visibleItems = group.items.filter((item) => hasPermission(item.permission));
+                  const visibleItems = group.items.filter((item) => isNavItemVisible(item, hasPermission));
                   if (visibleItems.length === 0) return null;
                   return (
                     <div key={idx} className="flex flex-col gap-0.5">
                       {group.heading && (
                         <span className="px-3 mb-1 text-[11px] font-semibold tracking-wider text-gray-400 dark:text-gray-500 uppercase">
-                          {group.heading}
+                          {t('nav.groups.' + groupKey(group.heading), { defaultValue: group.heading })}
                         </span>
                       )}
                       {renderNavItems(group.items, () => setMobileOpen(false))}
@@ -264,7 +196,11 @@ export function AppLayout() {
               <div>
                 <div className="flex items-center gap-2">
                   <h1 className="text-lg font-bold text-kct-noir dark:text-gray-100">
-                    {currentPage?.label ?? 'KCT Manager'}
+                    {(() => {
+                      const extra = EXTRA_PAGE_TITLES.find(([p]) => location.pathname.startsWith(p));
+                      if (extra) return t(extra[1]);
+                      return currentPage ? t('nav.items.' + navKey(currentPage.to), { defaultValue: currentPage.label }) : t('layout.defaultTitle');
+                    })()}
                   </h1>
                   {user && (
                     <span className={cn(
@@ -291,7 +227,7 @@ export function AppLayout() {
               <button
                 onClick={() => setIsDark(!isDark)}
                 className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                title={isDark ? 'Mode clair' : 'Mode sombre'}
+                title={isDark ? t('layout.lightMode') : t('layout.darkMode')}
               >
                 {isDark ? (
                   <Sun className="h-5 w-5 text-kct-gold" />
@@ -299,6 +235,8 @@ export function AppLayout() {
                   <Moon className="h-5 w-5 text-gray-500" />
                 )}
               </button>
+
+              <LanguageSwitcher />
 
               {/* Notifications */}
               <NotificationBell />
@@ -308,7 +246,7 @@ export function AppLayout() {
                 <NavLink
                   to="/profile"
                   className="hidden sm:flex flex-col items-end rounded-md px-2 py-1 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                  title="Mon profil"
+                  title={t('layout.myProfile')}
                 >
                   <span className="text-sm font-medium text-kct-noir dark:text-gray-100">{user?.nom}</span>
                   <span className="text-xs text-gray-400 dark:text-gray-500">{user?.email}</span>
@@ -316,13 +254,15 @@ export function AppLayout() {
                 <button
                   onClick={handleLogout}
                   className="p-2 rounded-md text-gray-500 dark:text-gray-400 hover:bg-kct-red/10 hover:text-kct-red transition-colors"
-                  title="Déconnexion"
+                  title={t('layout.logout')}
                 >
                   <LogOut className="h-5 w-5" />
                 </button>
               </div>
             </div>
           </header>
+
+          <MaintenanceBanner />
 
           {/* Page content */}
           <main className="flex-1 p-4 sm:p-6 overflow-x-auto">

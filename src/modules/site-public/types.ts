@@ -118,7 +118,7 @@ export interface Evenement {
 export interface CreateEvenementRequest {
   titre: string;
   description?: string;
-  type: string;
+  type?: string;
   dateDebut: string;
   dateFin?: string;
   lieu?: string;

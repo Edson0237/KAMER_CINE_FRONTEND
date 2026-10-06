@@ -1,18 +1,29 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '@/modules/auth/services/authService';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Film, Loader2, Mail, KeyRound, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Film, Loader2, User, KeyRound, ArrowLeft, CheckCircle2 } from 'lucide-react';
 
-type Step = 'email' | 'code' | 'done';
+/**
+ * Flux "mot de passe oublié" en 3 étapes distinctes (§6.3) :
+ * 1. identifiant → code envoyé (POST /mot-de-passe-oublie)
+ * 2. code → jeton temporaire à usage unique (POST /verifier-code-reinitialisation)
+ * 3. jeton + nouveau mot de passe (POST /changer-mot-de-passe)
+ * Le jeton (pas le code, pas le mot de passe actuel) est seul habilité à
+ * autoriser l'étape 3 — jamais transmis ni affiché à l'utilisateur.
+ */
+type Step = 'identifiant' | 'code' | 'nouveau-mot-de-passe' | 'done';
 
 export function ForgotPasswordScreen() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const [step, setStep] = useState<Step>('email');
-  const [email, setEmail] = useState('');
+  const [step, setStep] = useState<Step>('identifiant');
+  const [identifiant, setIdentifiant] = useState('');
   const [code, setCode] = useState('');
+  const [resetToken, setResetToken] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,10 +34,26 @@ export function ForgotPasswordScreen() {
     setLoading(true);
     setError(null);
     try {
-      await authService.forgotPassword({ email });
+      await authService.forgotPassword({ identifiant });
       setStep('code');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de l\'envoi du code';
+      const message = err instanceof Error ? err.message : t('auth.forgotPassword.errors.sendCode');
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      const { resetToken: token } = await authService.verifyResetCode({ identifiant, code });
+      setResetToken(token);
+      setStep('nouveau-mot-de-passe');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : t('auth.forgotPassword.errors.invalidCode');
       setError(message);
     } finally {
       setLoading(false);
@@ -36,20 +63,25 @@ export function ForgotPasswordScreen() {
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setError(t('auth.forgotPassword.errors.mismatch'));
       return;
     }
     if (newPassword.length < 8) {
-      setError('Le mot de passe doit contenir au moins 8 caractères');
+      setError(t('auth.forgotPassword.errors.tooShort'));
+      return;
+    }
+    if (!resetToken) {
+      setError(t('auth.forgotPassword.errors.missingToken'));
+      setStep('identifiant');
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      await authService.resetPassword({ email, code, newPassword });
+      await authService.resetPasswordWithToken({ resetToken, newPassword });
       setStep('done');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Code invalide ou expiré';
+      const message = err instanceof Error ? err.message : t('auth.forgotPassword.errors.invalidToken');
       setError(message);
     } finally {
       setLoading(false);
@@ -68,21 +100,20 @@ export function ForgotPasswordScreen() {
             <Film className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h1 className="text-white font-bold text-xl leading-tight">KAMER CINÉ TALENTS</h1>
-            <p className="text-kct-gold text-sm font-medium">Manager Web</p>
+            <h1 className="text-white font-bold text-xl leading-tight">{t('auth.branding.appName')}</h1>
+            <p className="text-kct-gold text-sm font-medium">{t('auth.branding.tagline')}</p>
           </div>
         </div>
         <div className="relative z-10 space-y-6">
-          <h2 className="text-white text-4xl font-bold leading-tight">
-            Récupération<br />de mot de passe
+          <h2 className="text-white text-4xl font-bold leading-tight whitespace-pre-line">
+            {t('auth.forgotPassword.brandingTitle')}
           </h2>
           <p className="text-gray-300 text-lg max-w-md">
-            Saisissez votre email pour recevoir un code de vérification
-            et réinitialiser votre mot de passe.
+            {t('auth.forgotPassword.brandingSubtitle')}
           </p>
         </div>
         <div className="relative z-10 text-gray-500 text-sm">
-          © 2026 KAMER CINÉ TALENTS — Tous droits réservés
+          {t('auth.branding.copyright')}
         </div>
       </div>
 
@@ -94,28 +125,29 @@ export function ForgotPasswordScreen() {
               <Film className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 className="text-kct-noir font-bold text-lg leading-tight">KAMER CINÉ TALENTS</h1>
-              <p className="text-kct-gold text-sm font-medium">Manager Web</p>
+              <h1 className="text-kct-noir font-bold text-lg leading-tight">{t('auth.branding.appName')}</h1>
+              <p className="text-kct-gold text-sm font-medium">{t('auth.branding.tagline')}</p>
             </div>
           </div>
 
-          {step === 'email' && (
+          {/* Étape 1/3 */}
+          {step === 'identifiant' && (
             <>
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-kct-noir">Mot de passe oublié</h2>
-                <p className="text-gray-600 mt-1">Entrez votre email pour recevoir un code</p>
+                <h2 className="text-2xl font-bold text-kct-noir">{t('auth.forgotPassword.step1.title')}</h2>
+                <p className="text-gray-600 mt-1">{t('auth.forgotPassword.step1.subtitle')}</p>
               </div>
               <form onSubmit={handleSendCode} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-kct-noir font-medium">Email</Label>
+                  <Label htmlFor="identifiant" className="text-kct-noir font-medium">{t('auth.forgotPassword.step1.label')}</Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="exemple@kamer-cinetalents.cm"
+                      id="identifiant"
+                      type="text"
+                      value={identifiant}
+                      onChange={(e) => setIdentifiant(e.target.value)}
+                      placeholder={t('auth.forgotPassword.step1.placeholder')}
                       required
                       className="pl-10 bg-white border-gray-300"
                     />
@@ -126,34 +158,35 @@ export function ForgotPasswordScreen() {
                 )}
                 <Button type="submit" disabled={loading} className="w-full bg-kct-gold hover:bg-kct-yellow text-white font-semibold py-2 text-base">
                   {loading ? (
-                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Envoi...</>
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> {t('auth.forgotPassword.step1.submitting')}</>
                   ) : (
-                    'Envoyer le code'
+                    t('auth.forgotPassword.step1.submit')
                   )}
                 </Button>
               </form>
             </>
           )}
 
+          {/* Étape 2/3 */}
           {step === 'code' && (
             <>
               <div className="mb-8">
-                <h2 className="text-2xl font-bold text-kct-noir">Vérification</h2>
+                <h2 className="text-2xl font-bold text-kct-noir">{t('auth.forgotPassword.step2.title')}</h2>
                 <p className="text-gray-600 mt-1">
-                  Un code a été envoyé à <span className="font-medium text-kct-noir">{email}</span>.
-                  Vérifiez les logs du serveur (V1).
+                  {t('auth.forgotPassword.step2.subtitlePrefix')} <span className="font-medium text-kct-noir">{identifiant}</span>.
+                  {' '}{t('auth.forgotPassword.step2.subtitleSuffix')}
                 </p>
               </div>
-              <form onSubmit={handleResetPassword} className="space-y-5">
+              <form onSubmit={handleVerifyCode} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="code" className="text-kct-noir font-medium">Code de vérification</Label>
+                  <Label htmlFor="code" className="text-kct-noir font-medium">{t('auth.forgotPassword.step2.label')}</Label>
                   <div className="relative">
                     <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
                       id="code"
                       type="text"
                       value={code}
-                      onChange={(e) => setCode(e.target.value)}
+                      onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
                       placeholder="123456"
                       maxLength={6}
                       required
@@ -161,8 +194,30 @@ export function ForgotPasswordScreen() {
                     />
                   </div>
                 </div>
+                {error && (
+                  <p className="text-sm text-kct-red bg-kct-red/10 p-3 rounded-md border border-kct-red/20">{error}</p>
+                )}
+                <Button type="submit" disabled={loading || code.length !== 6} className="w-full bg-kct-gold hover:bg-kct-yellow text-white font-semibold py-2 text-base">
+                  {loading ? (
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> {t('auth.forgotPassword.step2.submitting')}</>
+                  ) : (
+                    t('auth.forgotPassword.step2.submit')
+                  )}
+                </Button>
+              </form>
+            </>
+          )}
+
+          {/* Étape 3/3 */}
+          {step === 'nouveau-mot-de-passe' && (
+            <>
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-kct-noir">{t('auth.forgotPassword.step3.title')}</h2>
+                <p className="text-gray-600 mt-1">{t('auth.forgotPassword.step3.subtitle')}</p>
+              </div>
+              <form onSubmit={handleResetPassword} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="newPassword" className="text-kct-noir font-medium">Nouveau mot de passe</Label>
+                  <Label htmlFor="newPassword" className="text-kct-noir font-medium">{t('auth.forgotPassword.step3.newPassword')}</Label>
                   <Input
                     id="newPassword"
                     type="password"
@@ -174,7 +229,7 @@ export function ForgotPasswordScreen() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirmPassword" className="text-kct-noir font-medium">Confirmer le mot de passe</Label>
+                  <Label htmlFor="confirmPassword" className="text-kct-noir font-medium">{t('auth.forgotPassword.step3.confirmPassword')}</Label>
                   <Input
                     id="confirmPassword"
                     type="password"
@@ -190,9 +245,9 @@ export function ForgotPasswordScreen() {
                 )}
                 <Button type="submit" disabled={loading} className="w-full bg-kct-gold hover:bg-kct-yellow text-white font-semibold py-2 text-base">
                   {loading ? (
-                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Vérification...</>
+                    <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> {t('auth.forgotPassword.step3.submitting')}</>
                   ) : (
-                    'Réinitialiser'
+                    t('auth.forgotPassword.step3.submit')
                   )}
                 </Button>
               </form>
@@ -207,18 +262,18 @@ export function ForgotPasswordScreen() {
                 </div>
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-kct-noir">Mot de passe réinitialisé</h2>
-                <p className="text-gray-600 mt-2">Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.</p>
+                <h2 className="text-2xl font-bold text-kct-noir">{t('auth.forgotPassword.done.title')}</h2>
+                <p className="text-gray-600 mt-2">{t('auth.forgotPassword.done.message')}</p>
               </div>
               <Button onClick={() => navigate('/login')} className="w-full bg-kct-gold hover:bg-kct-yellow text-white font-semibold py-2 text-base">
-                Retour à la connexion
+                {t('auth.forgotPassword.done.backToLogin')}
               </Button>
             </div>
           )}
 
           {step !== 'done' && (
             <Link to="/login" className="flex items-center gap-2 text-sm text-kct-gold hover:underline font-medium mt-6 justify-center">
-              <ArrowLeft className="h-4 w-4" /> Retour à la connexion
+              <ArrowLeft className="h-4 w-4" /> {t('auth.forgotPassword.backToLogin')}
             </Link>
           )}
         </div>

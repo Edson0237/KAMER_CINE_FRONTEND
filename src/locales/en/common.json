@@ -1,0 +1,374 @@
+{
+  "auth": {
+    "branding": {
+      "appName": "KAMER CINÉ TALENTS",
+      "tagline": "Manager Web",
+      "copyright": "© 2026 KAMER CINÉ TALENTS — All rights reserved",
+      "statCommunes": "Communes",
+      "statNiveaux": "Levels",
+      "statRegions": "Regions"
+    },
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Access your management workspace",
+      "brandingTitle": "National steering of\nfilm trade\ntraining",
+      "brandingSubtitle": "360 communes, 7 hierarchical levels, one single tool to run the whole training program.",
+      "identifiant": "Email or phone number",
+      "identifiantPlaceholder": "example@kamer-cinetalents.cm or 6XX XXX XXX",
+      "password": "Password",
+      "forgotPassword": "Forgot your password?",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account yet? Contact your region's administrator."
+    },
+    "twoFactor": {
+      "brandingTitle": "Two-factor\nverification",
+      "brandingSubtitle": "A verification code has been sent to your email. Enter it below to finish signing in.",
+      "title": "Verification code",
+      "subtitleWithIdentifiant": "A code was sent to {{identifiant}}. Check the server logs (V1).",
+      "subtitleGeneric": "Enter the code you received. Check the server logs (V1).",
+      "codeLabel": "6-digit code",
+      "submitting": "Verifying...",
+      "submit": "Verify and sign in",
+      "backToLogin": "Back to sign in"
+    },
+    "forgotPassword": {
+      "brandingTitle": "Password\nrecovery",
+      "brandingSubtitle": "Enter your email or phone number to receive a verification code and reset your password.",
+      "backToLogin": "Back to sign in",
+      "errors": {
+        "sendCode": "Error while sending the code",
+        "invalidCode": "Invalid or expired code",
+        "mismatch": "Passwords do not match",
+        "tooShort": "Password must be at least 8 characters long",
+        "missingToken": "Missing reset token — please restart the process",
+        "invalidToken": "Invalid, already used or expired token"
+      },
+      "step1": {
+        "title": "Forgot password",
+        "subtitle": "Step 1/3 — Enter your email or phone number to receive a code",
+        "label": "Email or phone number",
+        "placeholder": "example@kamer-cinetalents.cm or 6XX XXX XXX",
+        "submitting": "Sending...",
+        "submit": "Send code"
+      },
+      "step2": {
+        "title": "Verification",
+        "subtitlePrefix": "Step 2/3 — A code was sent to",
+        "subtitleSuffix": "Check the server logs (V1).",
+        "label": "Verification code",
+        "submitting": "Verifying...",
+        "submit": "Verify code"
+      },
+      "step3": {
+        "title": "New password",
+        "subtitle": "Step 3/3 — Code verified, choose your new password",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm password",
+        "submitting": "Resetting...",
+        "submit": "Reset password"
+      },
+      "done": {
+        "title": "Password reset",
+        "message": "You can now sign in with your new password.",
+        "backToLogin": "Back to sign in"
+      }
+    },
+    "changePassword": {
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "hint": "At least 8 characters.",
+      "submitting": "Changing...",
+      "submit": "Change password",
+      "success": "Password changed successfully.",
+      "errors": {
+        "tooShort": "The new password must be at least 8 characters long.",
+        "mismatch": "The two passwords do not match.",
+        "generic": "Incorrect current password or server error."
+      }
+    },
+    "forcePasswordChange": {
+      "title": "Password change required",
+      "greeting": "Hello {{nom}}. Your account uses a temporary password. You must change it before continuing."
+    },
+    "profile": {
+      "title": "My profile",
+      "subtitle": "Account information and security",
+      "loadError": "Error loading profile",
+      "accountInfo": "Account information",
+      "notProvided": "Not provided",
+      "territory": "Territory",
+      "accountActive": "Active account",
+      "accountInactive": "Deactivated account",
+      "changePasswordTitle": "Change my password"
+    }
+  },
+  "layout": {
+    "appName": "Talents Manager",
+    "collapse": "Collapse",
+    "logout": "Sign out",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "myProfile": "My profile",
+    "language": "Language",
+    "defaultTitle": "KCT Manager",
+    "pageTitles": {
+      "notifications": "Notifications",
+      "profile": "My profile",
+      "communes": "Commune",
+      "session": "Training session"
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "create": "Create",
+    "close": "Close",
+    "modify": "Edit",
+    "deactivate": "Deactivate",
+    "active": "Active",
+    "inactive": "Inactive",
+    "search": "Search…",
+    "national": "National",
+    "notProvided": "—"
+  },
+  "budget": {
+    "depenseStatut": {
+      "soumise": "Pending N4",
+      "en_attente_n3": "Pending N3",
+      "en_attente_n2": "Pending N2",
+      "en_attente_n1": "Pending N1",
+      "validee": "Approved",
+      "rejetee": "Rejected"
+    },
+    "etapes": {
+      "n4": "N4 — District",
+      "n3": "N3 — Department",
+      "n2": "N2 — Region",
+      "n1": "N1 — Central Committee"
+    },
+    "cascade": {
+      "validatedOn": "Approved on {{date}}",
+      "pending": "Awaiting approval",
+      "rejected": "Rejected",
+      "rejectedOn": "Rejected on {{date}}"
+    },
+    "categories": {
+      "logistique": "Logistics",
+      "materiel": "Equipment",
+      "transport": "Transport",
+      "equipement": "Equipment",
+      "fournitures": "Supplies",
+      "restauration": "Catering",
+      "autre": "Other"
+    },
+    "docType": {
+      "facture": "Invoice",
+      "recu": "Receipt",
+      "bon_commande": "Purchase order"
+    },
+    "partenaireType": {
+      "ministere": "Ministry",
+      "ong": "NGO",
+      "bailleur": "Funder",
+      "prive": "Private"
+    },
+    "mesDepenses": {
+      "title": "My submitted expenses",
+      "statutSoumise": "Submitted — pending N4",
+      "empty": "No expenses submitted",
+      "motif": "Reason: {{motif}}"
+    },
+    "aValider": {
+      "title": "Expenses to approve",
+      "empty": "No expense pending at your step",
+      "submittedOn": "Submitted on {{date}}",
+      "motifPlaceholder": "Reason for rejection…",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "validate": "Approve",
+      "reject": "Reject"
+    },
+    "submitModal": {
+      "title": "Submit an expense",
+      "submitted": "Expense submitted.",
+      "submittedDetail": "{{montant}} — approval required up to {{etape}} (calculated from the amount).",
+      "territoire": "Territory",
+      "territoireLocked": "Locked to your scope.",
+      "montant": "Amount (XAF)",
+      "categorie": "Category",
+      "description": "Description",
+      "descriptionPlaceholder": "Purpose of the expense",
+      "requiredError": "Territory, description and a positive amount are required.",
+      "submit": "Submit",
+      "close": "Close"
+    },
+    "detailModal": {
+      "territoire": "Territory",
+      "categorie": "Category",
+      "submittedOn": "Submitted on",
+      "requiredUntil": "Approval required up to",
+      "cascadeTitle": "Approval cascade",
+      "justificatifsTitle": "Supporting documents",
+      "noJustificatif": "No supporting document attached.",
+      "docTypeLabel": "Document type",
+      "attachButton": "Attach a file",
+      "waitingValidation": "This expense is awaiting your approval ({{etape}}).",
+      "rejectMotifPlaceholder": "Reason for rejection (required)",
+      "confirmReject": "Confirm rejection",
+      "validate": "Approve",
+      "reject": "Reject",
+      "actionError": "Action denied",
+      "uploadError": "Upload failed"
+    },
+    "screen": {
+      "title": "Expenses",
+      "subtitle": "Budget submission and cascade approval N4 → N3 → N2 → N1",
+      "submitButton": "Submit an expense",
+      "tabAValider": "To approve",
+      "tabToutes": "All expenses",
+      "tabMes": "My submissions",
+      "statAValiderVous": "For you to approve",
+      "statValidees": "Approved",
+      "statRejetees": "Rejected",
+      "statTotal": "Total in your scope",
+      "allStatuts": "All statuses",
+      "loading": "Loading expenses…",
+      "empty": "No expenses",
+      "emptyHint": "No expense matches this view.",
+      "colDate": "Date",
+      "colDescription": "Description",
+      "colTerritoire": "Territory",
+      "colMontant": "Amount",
+      "colStatut": "Status"
+    },
+    "finances": {
+      "title": "Budgets & partners",
+      "subtitle": "Allocated budgets, subventions, donations and financial partners",
+      "noAccess": "Access not authorized",
+      "noAccessHint": "Your profile has no access to any financial view.",
+      "tabBudgets": "Budgets",
+      "tabSubventions": "Subventions & donations",
+      "tabPartenaires": "Financial partners",
+      "budgets": {
+        "alloue": "Allocated",
+        "utilise": "Used (approved expenses)",
+        "solde": "Balance",
+        "newBudget": "New budget",
+        "empty": "No budget",
+        "emptyHint": "No budget allocated in your scope.",
+        "colTerritoire": "Territory",
+        "colExercice": "Fiscal year",
+        "colAlloue": "Allocated",
+        "colUtilisation": "Usage",
+        "colSolde": "Balance",
+        "modalTitle": "New budget",
+        "exercice": "Fiscal year",
+        "montant": "Allocated amount (XAF)",
+        "requiredError": "Territory, fiscal year and a positive amount are required.",
+        "createError": "Creation failed"
+      },
+      "partenaires": {
+        "newPartenaire": "New partner",
+        "empty": "No financial partner",
+        "colNom": "Name",
+        "colType": "Type",
+        "colContact": "Contact",
+        "colStatut": "Status",
+        "modalTitleNew": "New financial partner",
+        "modalTitleEdit": "Edit partner",
+        "nom": "Name",
+        "type": "Type",
+        "email": "Email",
+        "telephone": "Phone",
+        "requiredError": "Name is required.",
+        "saveError": "Save failed"
+      },
+      "subventions": {
+        "newSubvention": "Record a subvention / donation",
+        "empty": "No subvention",
+        "emptyHint": "No subvention or donation recorded.",
+        "colReception": "Received",
+        "colPartenaire": "Partner",
+        "colType": "Type",
+        "colTerritoire": "Territory",
+        "colMontant": "Amount",
+        "colStatut": "Status",
+        "modalTitle": "Record a subvention or donation",
+        "partenaire": "Partner",
+        "type": "Type",
+        "typeSubvention": "Subvention",
+        "typeDon": "Donation",
+        "dateReception": "Date received",
+        "territoireBeneficiaire": "Beneficiary territory",
+        "territoireHint": "Leave empty for a national subvention.",
+        "montant": "Amount (XAF)",
+        "requiredError": "Partner, a positive amount and date are required.",
+        "saveError": "Save failed"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "seeAll": "See all notifications",
+    "empty": "No notifications",
+    "realtimeOn": "Real-time active",
+    "realtimeConnecting": "Connecting to real-time…",
+    "realtimeOff": "Real-time unavailable — periodic refresh"
+  },
+  "nav": {
+    "groups": {
+      "pilotage": "Steering",
+      "territoire": "Territory",
+      "formation": "Training",
+      "finances": "Finance",
+      "production_suivi": "Production & monitoring",
+      "logistique": "Logistics",
+      "communication": "Communication",
+      "administration": "Administration",
+      "administration_systeme": "System administration",
+      "site": "Website"
+    },
+    "items": {
+      "dashboard": "Dashboard",
+      "carte": "Map of Cameroon",
+      "incidents": "Incidents",
+      "territoires": "Territories",
+      "apprenants": "Learners",
+      "encadreurs": "Instructors",
+      "sessions": "Sessions",
+      "presences": "Attendance",
+      "resultats": "Results",
+      "attestations": "Certificates",
+      "budget_depenses": "Expenses",
+      "budget_finances": "Budgets & partners",
+      "productions": "Productions",
+      "rapports": "Reports",
+      "materiel": "Equipment",
+      "communication_diffusion": "Send a notification",
+      "communication_circulaires": "Circulars",
+      "communication_reunions": "Meetings",
+      "communication_bibliotheque": "Library",
+      "admin_overview": "Overview",
+      "admin_audit": "Audit log",
+      "admin_users": "Users",
+      "admin_roles": "Roles & permissions",
+      "admin_imports": "Bulk imports",
+      "admin_technique": "Technical view",
+      "admin_parametres": "System settings",
+      "admin_feature_flags": "Feature flags",
+      "admin_maintenance": "Maintenance mode",
+      "admin_integrations": "External integrations",
+      "admin_sauvegardes": "Backups",
+      "site_actualites": "News",
+      "site_faq": "FAQ",
+      "site_equipe": "Team",
+      "site_partenaires": "Partners",
+      "site_evenements": "Events",
+      "site_catalogue_formations": "Training catalogue",
+      "site_candidatures": "Applications",
+      "site_contact": "Messages"
+    }
+  }
+}

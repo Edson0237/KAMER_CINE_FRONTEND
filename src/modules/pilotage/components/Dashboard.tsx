@@ -1,15 +1,27 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 import AutoScroll from 'embla-carousel-auto-scroll';
 import { useIndicateurs } from '../hooks/useIndicateurs';
 import { useCarte } from '../hooks/useCarte';
 import { useAuthContext } from '@/shared/auth/AuthContext';
 import { getNiveauLabel } from '@/shared/auth/ProtectedRoute';
-import { Badge } from '@/components/ui/badge';
+import { StatusBadge } from '@/components/ui/status-badge';
+import { DepensesAValider } from '@/modules/budget/components/DepensesAValider';
+import { MesDepenses } from '@/modules/budget/components/MesDepenses';
+import { ActionCenter } from './ActionCenter';
 import {
   Users, GraduationCap, CalendarCheck, MapPin, TrendingUp, Award,
-  Loader2, Shield, Activity, BarChart3,
+  Loader2, Shield, Activity, BarChart3, ArrowRight,
 } from 'lucide-react';
+
+type QuickLink = { to: string; label: string; icon: typeof Users; permission: string };
+
+const GESTION_LINKS: QuickLink[] = [
+  { to: '/apprenants', label: 'Apprenants', icon: Users, permission: 'apprenant:read' },
+  { to: '/encadreurs', label: 'Encadreurs', icon: GraduationCap, permission: 'encadreur:read' },
+  { to: '/sessions', label: 'Sessions', icon: CalendarCheck, permission: 'session:read' },
+];
 
 const ICON_MAP: Record<string, typeof Users> = {
   'Communes actives': MapPin,
@@ -37,7 +49,8 @@ const COLOR_MAP: Record<string, { bg: string; text: string }> = {
  * Le frontend ne fait QUE refléter ce que l'API autorise.</p>
  */
 export function Dashboard() {
-  const { user } = useAuthContext();
+  const { user, hasPermission } = useAuthContext();
+  const navigate = useNavigate();
   const { indicateurs, loading, error } = useIndicateurs();
   const { carteData } = useCarte();
 
@@ -67,12 +80,14 @@ export function Dashboard() {
 
   const totalCommunes = carteData?.communes.length ?? 0;
   const communes = carteData?.communes ?? [];
-  const activeCommunes = communes.filter((c) => c.statutCommune === 'active').length;
+  const termineeCommunes = communes.filter((c) => c.statutCommune === 'terminee').length;
   const enCoursCommunes = communes.filter((c) => c.statutCommune === 'en_cours').length;
-  const inactiveCommunes = communes.filter((c) => c.statutCommune === 'inactive').length;
-  const activePct = totalCommunes > 0 ? Math.round((activeCommunes / totalCommunes) * 100) : 0;
+  const nonDemarreeCommunes = communes.filter((c) => c.statutCommune === 'non_demarree').length;
+  const suspendueCommunes = communes.filter((c) => c.statutCommune === 'suspendue').length;
+  const termineePct = totalCommunes > 0 ? Math.round((termineeCommunes / totalCommunes) * 100) : 0;
   const enCoursPct = totalCommunes > 0 ? Math.round((enCoursCommunes / totalCommunes) * 100) : 0;
-  const inactivePct = totalCommunes > 0 ? Math.round((inactiveCommunes / totalCommunes) * 100) : 0;
+  const nonDemarreePct = totalCommunes > 0 ? Math.round((nonDemarreeCommunes / totalCommunes) * 100) : 0;
+  const suspenduePct = totalCommunes > 0 ? Math.round((suspendueCommunes / totalCommunes) * 100) : 0;
 
   return (
     <div className="space-y-6">
@@ -90,6 +105,24 @@ export function Dashboard() {
           </div>
         )}
       </div>
+
+      {GESTION_LINKS.some((l) => hasPermission(l.permission)) && (
+        <div className="flex flex-wrap gap-2">
+          {GESTION_LINKS.filter((l) => hasPermission(l.permission)).map((l) => (
+            <button
+              key={l.to}
+              onClick={() => navigate(l.to)}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-sm font-medium text-gray-700 dark:text-gray-200"
+            >
+              <l.icon className="h-4 w-4 text-kct-gold" />
+              {l.label}
+              <ArrowRight className="h-3.5 w-3.5 text-gray-400" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      <ActionCenter />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {indicateurs.map((ind) => {
@@ -133,11 +166,7 @@ export function Dashboard() {
                     >
                       <div className="flex items-center justify-between mb-3">
                         <span className="font-medium text-gray-900 dark:text-gray-100 truncate">{c.nom}</span>
-                        <Badge
-                          variant={c.statutCommune === 'active' ? 'success' : c.statutCommune === 'en_cours' ? 'warning' : 'danger'}
-                        >
-                          {c.statutCommune}
-                        </Badge>
+                        <StatusBadge statut={c.statutCommune} />
                       </div>
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between text-xs">
@@ -174,11 +203,11 @@ export function Dashboard() {
               <div className="space-y-4">
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Communes actives</span>
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{activeCommunes} ({activePct}%)</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Terminées</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{termineeCommunes} ({termineePct}%)</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full transition-all duration-500" style={{ width: `${activePct}%` }} />
+                    <div className="bg-kct-green h-2 rounded-full transition-all duration-500" style={{ width: `${termineePct}%` }} />
                   </div>
                 </div>
 
@@ -188,17 +217,27 @@ export function Dashboard() {
                     <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{enCoursCommunes} ({enCoursPct}%)</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-amber-500 h-2 rounded-full transition-all duration-500" style={{ width: `${enCoursPct}%` }} />
+                    <div className="bg-kct-yellow h-2 rounded-full transition-all duration-500" style={{ width: `${enCoursPct}%` }} />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-1">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Inactives</span>
-                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{inactiveCommunes} ({inactivePct}%)</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Non démarrées</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{nonDemarreeCommunes} ({nonDemarreePct}%)</span>
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                    <div className="bg-red-500 h-2 rounded-full transition-all duration-500" style={{ width: `${inactivePct}%` }} />
+                    <div className="bg-kct-gold h-2 rounded-full transition-all duration-500" style={{ width: `${nonDemarreePct}%` }} />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Suspendues</span>
+                    <span className="text-sm font-medium text-gray-900 dark:text-gray-100">{suspendueCommunes} ({suspenduePct}%)</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                    <div className="bg-kct-red h-2 rounded-full transition-all duration-500" style={{ width: `${suspenduePct}%` }} />
                   </div>
                 </div>
               </div>
@@ -212,6 +251,9 @@ export function Dashboard() {
           </div>
         )}
       </div>
+
+      {user?.niveau === 4 && hasPermission('depense:valider_n4') && <DepensesAValider niveau={4} />}
+      {user?.niveau === 5 && hasPermission('depense:soumettre') && <MesDepenses />}
     </div>
   );
 }

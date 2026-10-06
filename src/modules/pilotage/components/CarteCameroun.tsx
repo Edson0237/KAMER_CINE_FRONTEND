@@ -3,16 +3,10 @@ import { MapContainer, TileLayer, GeoJSON } from 'react-leaflet';
 import { useCarte } from '../hooks/useCarte';
 import { useTerritoires } from '@/modules/territoire/hooks/useTerritoires';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { StatusBadge, STATUT_COMMUNE_COLORS, couleurStatutCommune, type StatutCommune } from '@/components/ui/status-badge';
 import { Loader2 } from 'lucide-react';
+import { DeploymentMap } from './DeploymentMap';
 import 'leaflet/dist/leaflet.css';
-
-const STATUT_COLORS: Record<string, string> = {
-  'active': '#3F9142',
-  'en_cours': '#C9A227',
-  'inactive': '#C0392B',
-  'planifiee': '#B8860B',
-};
 
 /**
  * Carte interactive du Cameroun (M2/M4) — affiche les communes colorées
@@ -46,9 +40,8 @@ export function CarteCameroun() {
   const style = (feature?: GeoJSON.Feature) => {
     const communeName = feature?.properties?.['NAME_3'] ?? feature?.properties?.['name'] ?? '';
     const commune = communeMap.get(communeName);
-    const statut = commune?.statutCommune ?? 'inactive';
     return {
-      fillColor: STATUT_COLORS[statut] ?? '#C0392B',
+      fillColor: couleurStatutCommune(commune?.statutCommune ?? 'non_demarree'),
       weight: 1,
       opacity: 1,
       color: '#1A1A1A',
@@ -63,8 +56,12 @@ export function CarteCameroun() {
         <p className="text-sm text-gray-500 dark:text-gray-400">Communes colorées selon leur statut de déploiement</p>
       </div>
 
+      {communeGeoJsonPlaceholder.features.length === 0 ? (
+        <DeploymentMap />
+      ) : (
+      <>
       <div className="flex gap-2 flex-wrap">
-        {Object.entries(STATUT_COLORS).map(([statut, couleur]) => (
+        {(Object.entries(STATUT_COMMUNE_COLORS) as [StatutCommune, string][]).map(([statut, couleur]) => (
           <div key={statut} className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{ backgroundColor: couleur }} />
             <span className="text-sm text-gray-900 dark:text-gray-100 capitalize">{statut.replace(/_/g, ' ')}</span>
@@ -121,16 +118,14 @@ export function CarteCameroun() {
                   className="flex items-center justify-between p-2 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors text-left"
                 >
                   <span className="text-sm text-gray-900 dark:text-gray-100">{c.nom}</span>
-                  <Badge
-                    variant={c.statutCommune === 'active' ? 'success' : c.statutCommune === 'en_cours' ? 'warning' : 'danger'}
-                  >
-                    {c.statutCommune}
-                  </Badge>
+                  <StatusBadge statut={c.statutCommune} />
                 </button>
               ))}
             </div>
           </CardContent>
         </Card>
+      )}
+      </>
       )}
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { notificationService } from '../services/notificationService';
 import type { NotificationItem } from '../types';
+import { REALTIME_EVENT } from '@/shared/realtime/RealtimeProvider';
 
 const POLL_INTERVAL_MS = 30000;
 
@@ -38,8 +39,10 @@ export function useNotifications() {
   useEffect(() => {
     load();
     intervalRef.current = setInterval(load, POLL_INTERVAL_MS);
+    window.addEventListener(REALTIME_EVENT, load);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
+      window.removeEventListener(REALTIME_EVENT, load);
     };
   }, [load]);
 

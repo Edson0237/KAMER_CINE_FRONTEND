@@ -4,7 +4,7 @@ import { territoireService } from '../services/territoireService';
 import type { Commune } from '../types';
 import { useAuthContext } from '@/shared/auth/AuthContext';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { StatusBadge } from '@/components/ui/status-badge';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Users, GraduationCap, CalendarCheck, Loader2, MapPin, ClipboardList, Award, FileCheck } from 'lucide-react';
 
@@ -49,12 +49,6 @@ export function CommuneDetail() {
     return <p className="text-gray-500">Commune introuvable</p>;
   }
 
-  const statutVariant = commune.statutCommune === 'active'
-    ? 'success' as const
-    : commune.statutCommune === 'en_cours'
-      ? 'warning' as const
-      : 'danger' as const;
-
   const isN5 = user?.niveau === 5;
 
   const quickActions = [
@@ -85,7 +79,7 @@ export function CommuneDetail() {
               <MapPin className="h-5 w-5 text-kct-gold" />
               <CardTitle className="text-lg text-kct-noir dark:text-gray-100">Informations générales</CardTitle>
             </div>
-            <Badge variant={statutVariant}>{commune.statutCommune}</Badge>
+            <StatusBadge statut={commune.statutCommune} />
           </div>
           <CardDescription>Statut de déploiement de la commune</CardDescription>
         </CardHeader>

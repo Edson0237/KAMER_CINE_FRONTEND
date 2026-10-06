@@ -33,13 +33,16 @@ export interface Encadreur {
 export interface SessionFormation {
   id: string;
   territoireId: string;
-  encadreurId: string;
-  dateDebut: string;
+  encadreurId: string | null;
+  dateDebut: string | null;
   dateFin: string | null;
   lieu: string | null;
   programme: string | null;
+  filiereId: string | null;
   statut: string;
 }
+
+export type StatutPresence = 'present' | 'absent' | 'retard';
 
 export interface Presence {
   id: string;
@@ -47,6 +50,7 @@ export interface Presence {
   apprenantId: string;
   date: string;
   statut: string;
+  saisieParId?: string | null;
 }
 
 export interface ResultatExamen {
@@ -61,17 +65,17 @@ export interface Attestation {
   id: string;
   apprenantId: string;
   sessionId: string;
-  dateEmission: string;
-  numeroAttestation: string;
-  statut: string;
+  numero: string;
+  dateDelivrance: string;
+  fichierUrl: string | null;
 }
 
 export interface TauxReussite {
   sessionId: string;
   totalApprenants: number;
   totalReussis: number;
-  taux: number;
-  cloturee: boolean;
+  tauxReussite: number;
+  sessionCloturee: boolean;
 }
 
 export interface CreateApprenantRequest {
@@ -99,11 +103,12 @@ export interface CreateEncadreurRequest {
 export interface CreateSessionRequest {
   id?: string;
   territoireId: string;
-  encadreurId: string;
-  dateDebut: string;
+  encadreurId?: string;
+  dateDebut?: string;
   dateFin?: string;
-  lieu?: string;
+  lieu: string;
   programme?: string;
+  filiereId?: string;
   statut?: string;
 }
 

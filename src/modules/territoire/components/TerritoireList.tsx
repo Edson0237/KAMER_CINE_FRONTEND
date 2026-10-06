@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTerritoires } from '../hooks/useTerritoires';
 import { territoireService } from '../services/territoireService';
-import { Badge } from '@/components/ui/badge';
+import { StatusBadge } from '@/components/ui/status-badge';
 import {
   Loader2, MapPin, ChevronRight, ChevronDown, Users,
   GraduationCap, CalendarCheck, Building2, Globe, Map as MapIcon, Search,
@@ -163,11 +163,7 @@ function TerritoryNode({
                     <MapPin className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
                   </div>
                   <span className="text-sm text-gray-700 dark:text-gray-300 truncate flex-1">{c.nom}</span>
-                  <Badge
-                    variant={c.statutCommune === 'active' ? 'success' : c.statutCommune === 'en_cours' ? 'warning' : 'danger'}
-                  >
-                    {c.statutCommune}
-                  </Badge>
+                  <StatusBadge statut={c.statutCommune} />
                   <div className="flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500 shrink-0">
                     <span className="flex items-center gap-0.5"><Users className="h-3 w-3" />{c.nombreApprenants}</span>
                     <span className="flex items-center gap-0.5"><GraduationCap className="h-3 w-3" />{c.nombreEncadreurs}</span>

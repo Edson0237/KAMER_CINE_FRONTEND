@@ -1,0 +1,374 @@
+{
+  "auth": {
+    "branding": {
+      "appName": "KAMER CINÉ TALENTS",
+      "tagline": "Manager Web",
+      "copyright": "© 2026 KAMER CINÉ TALENTS — Tous droits réservés",
+      "statCommunes": "Communes",
+      "statNiveaux": "Niveaux",
+      "statRegions": "Régions"
+    },
+    "login": {
+      "title": "Connexion",
+      "subtitle": "Accédez à votre espace de pilotage",
+      "brandingTitle": "Pilotage national de la\nformation aux métiers\ndu cinéma",
+      "brandingSubtitle": "360 communes, 7 niveaux hiérarchiques, un seul outil pour orchestrer tout le programme de formation.",
+      "identifiant": "Email ou téléphone",
+      "identifiantPlaceholder": "exemple@kamer-cinetalents.cm ou 6XX XXX XXX",
+      "password": "Mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "submitting": "Connexion...",
+      "noAccount": "Pas encore de compte ? Contactez l'administrateur de votre région."
+    },
+    "twoFactor": {
+      "brandingTitle": "Vérification\nà deux facteurs",
+      "brandingSubtitle": "Un code de vérification a été envoyé à votre email. Saisissez-le ci-dessous pour finaliser votre connexion.",
+      "title": "Code de vérification",
+      "subtitleWithIdentifiant": "Un code a été envoyé à {{identifiant}}. Vérifiez les logs du serveur (V1).",
+      "subtitleGeneric": "Entrez le code reçu. Vérifiez les logs du serveur (V1).",
+      "codeLabel": "Code à 6 chiffres",
+      "submitting": "Vérification...",
+      "submit": "Vérifier et se connecter",
+      "backToLogin": "Retour à la connexion"
+    },
+    "forgotPassword": {
+      "brandingTitle": "Récupération\nde mot de passe",
+      "brandingSubtitle": "Saisissez votre email ou votre téléphone pour recevoir un code de vérification et réinitialiser votre mot de passe.",
+      "backToLogin": "Retour à la connexion",
+      "errors": {
+        "sendCode": "Erreur lors de l'envoi du code",
+        "invalidCode": "Code invalide ou expiré",
+        "mismatch": "Les mots de passe ne correspondent pas",
+        "tooShort": "Le mot de passe doit contenir au moins 8 caractères",
+        "missingToken": "Jeton de réinitialisation manquant — recommencez la procédure",
+        "invalidToken": "Jeton invalide, déjà utilisé ou expiré"
+      },
+      "step1": {
+        "title": "Mot de passe oublié",
+        "subtitle": "Étape 1/3 — Entrez votre email ou téléphone pour recevoir un code",
+        "label": "Email ou téléphone",
+        "placeholder": "exemple@kamer-cinetalents.cm ou 6XX XXX XXX",
+        "submitting": "Envoi...",
+        "submit": "Envoyer le code"
+      },
+      "step2": {
+        "title": "Vérification",
+        "subtitlePrefix": "Étape 2/3 — Un code a été envoyé à",
+        "subtitleSuffix": "Vérifiez les logs du serveur (V1).",
+        "label": "Code de vérification",
+        "submitting": "Vérification...",
+        "submit": "Vérifier le code"
+      },
+      "step3": {
+        "title": "Nouveau mot de passe",
+        "subtitle": "Étape 3/3 — Code vérifié, choisissez votre nouveau mot de passe",
+        "newPassword": "Nouveau mot de passe",
+        "confirmPassword": "Confirmer le mot de passe",
+        "submitting": "Réinitialisation...",
+        "submit": "Réinitialiser le mot de passe"
+      },
+      "done": {
+        "title": "Mot de passe réinitialisé",
+        "message": "Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+        "backToLogin": "Retour à la connexion"
+      }
+    },
+    "changePassword": {
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le nouveau mot de passe",
+      "hint": "Au moins 8 caractères.",
+      "submitting": "Changement en cours...",
+      "submit": "Changer le mot de passe",
+      "success": "Mot de passe changé avec succès.",
+      "errors": {
+        "tooShort": "Le nouveau mot de passe doit contenir au moins 8 caractères.",
+        "mismatch": "Les deux mots de passe ne correspondent pas.",
+        "generic": "Mot de passe actuel incorrect ou erreur serveur."
+      }
+    },
+    "forcePasswordChange": {
+      "title": "Changement de mot de passe requis",
+      "greeting": "Bonjour {{nom}}. Votre compte utilise un mot de passe temporaire. Vous devez le changer avant de continuer."
+    },
+    "profile": {
+      "title": "Mon profil",
+      "subtitle": "Informations du compte et sécurité",
+      "loadError": "Erreur de chargement du profil",
+      "accountInfo": "Informations du compte",
+      "notProvided": "Non renseigné",
+      "territory": "Territoire",
+      "accountActive": "Compte actif",
+      "accountInactive": "Compte désactivé",
+      "changePasswordTitle": "Changer mon mot de passe"
+    }
+  },
+  "layout": {
+    "appName": "Talents Manager",
+    "collapse": "Réduire",
+    "logout": "Déconnexion",
+    "darkMode": "Mode sombre",
+    "lightMode": "Mode clair",
+    "myProfile": "Mon profil",
+    "language": "Langue",
+    "defaultTitle": "KCT Manager",
+    "pageTitles": {
+      "notifications": "Notifications",
+      "profile": "Mon profil",
+      "communes": "Commune",
+      "session": "Session de formation"
+    }
+  },
+  "common": {
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "create": "Créer",
+    "close": "Fermer",
+    "modify": "Modifier",
+    "deactivate": "Désactiver",
+    "active": "Actif",
+    "inactive": "Inactif",
+    "search": "Rechercher…",
+    "national": "National",
+    "notProvided": "—"
+  },
+  "budget": {
+    "depenseStatut": {
+      "soumise": "En attente N4",
+      "en_attente_n3": "En attente N3",
+      "en_attente_n2": "En attente N2",
+      "en_attente_n1": "En attente N1",
+      "validee": "Validée",
+      "rejetee": "Rejetée"
+    },
+    "etapes": {
+      "n4": "N4 — Arrondissement",
+      "n3": "N3 — Département",
+      "n2": "N2 — Région",
+      "n1": "N1 — Comité Central"
+    },
+    "cascade": {
+      "validatedOn": "Validée le {{date}}",
+      "pending": "En attente de validation",
+      "rejected": "Rejetée",
+      "rejectedOn": "Rejetée le {{date}}"
+    },
+    "categories": {
+      "logistique": "Logistique",
+      "materiel": "Matériel",
+      "transport": "Transport",
+      "equipement": "Équipement",
+      "fournitures": "Fournitures",
+      "restauration": "Restauration",
+      "autre": "Autre"
+    },
+    "docType": {
+      "facture": "Facture",
+      "recu": "Reçu",
+      "bon_commande": "Bon de commande"
+    },
+    "partenaireType": {
+      "ministere": "Ministère",
+      "ong": "ONG",
+      "bailleur": "Bailleur",
+      "prive": "Privé"
+    },
+    "mesDepenses": {
+      "title": "Mes dépenses soumises",
+      "statutSoumise": "Soumise — en attente N4",
+      "empty": "Aucune dépense soumise",
+      "motif": "Motif : {{motif}}"
+    },
+    "aValider": {
+      "title": "Dépenses à valider",
+      "empty": "Aucune dépense en attente à votre étape",
+      "submittedOn": "Soumise le {{date}}",
+      "motifPlaceholder": "Motif du rejet…",
+      "confirm": "Confirmer",
+      "cancel": "Annuler",
+      "validate": "Valider",
+      "reject": "Rejeter"
+    },
+    "submitModal": {
+      "title": "Soumettre une dépense",
+      "submitted": "Dépense soumise.",
+      "submittedDetail": "{{montant}} — validation requise jusqu'à {{etape}} (calculé selon le montant).",
+      "territoire": "Territoire",
+      "territoireLocked": "Verrouillé sur votre périmètre.",
+      "montant": "Montant (XAF)",
+      "categorie": "Catégorie",
+      "description": "Description",
+      "descriptionPlaceholder": "Objet de la dépense",
+      "requiredError": "Territoire, description et un montant positif sont obligatoires.",
+      "submit": "Soumettre",
+      "close": "Fermer"
+    },
+    "detailModal": {
+      "territoire": "Territoire",
+      "categorie": "Catégorie",
+      "submittedOn": "Soumise le",
+      "requiredUntil": "Validation requise jusqu'à",
+      "cascadeTitle": "Cascade de validation",
+      "justificatifsTitle": "Justificatifs",
+      "noJustificatif": "Aucun justificatif joint.",
+      "docTypeLabel": "Type de document",
+      "attachButton": "Joindre un fichier",
+      "waitingValidation": "Cette dépense attend votre validation ({{etape}}).",
+      "rejectMotifPlaceholder": "Motif du rejet (obligatoire)",
+      "confirmReject": "Confirmer le rejet",
+      "validate": "Valider",
+      "reject": "Rejeter",
+      "actionError": "Action refusée",
+      "uploadError": "Échec du téléversement"
+    },
+    "screen": {
+      "title": "Dépenses",
+      "subtitle": "Soumission et validation budgétaire en cascade N4 → N3 → N2 → N1",
+      "submitButton": "Soumettre une dépense",
+      "tabAValider": "À valider",
+      "tabToutes": "Toutes les dépenses",
+      "tabMes": "Mes soumissions",
+      "statAValiderVous": "À valider par vous",
+      "statValidees": "Validées",
+      "statRejetees": "Rejetées",
+      "statTotal": "Total dans le périmètre",
+      "allStatuts": "Tous statuts",
+      "loading": "Chargement des dépenses…",
+      "empty": "Aucune dépense",
+      "emptyHint": "Aucune dépense ne correspond à cette vue.",
+      "colDate": "Date",
+      "colDescription": "Description",
+      "colTerritoire": "Territoire",
+      "colMontant": "Montant",
+      "colStatut": "Statut"
+    },
+    "finances": {
+      "title": "Budgets & partenaires",
+      "subtitle": "Budgets alloués, subventions, dons et partenaires financiers",
+      "noAccess": "Accès non autorisé",
+      "noAccessHint": "Votre profil n'a accès à aucune vue financière.",
+      "tabBudgets": "Budgets",
+      "tabSubventions": "Subventions & dons",
+      "tabPartenaires": "Partenaires financiers",
+      "budgets": {
+        "alloue": "Alloué",
+        "utilise": "Utilisé (dépenses validées)",
+        "solde": "Solde",
+        "newBudget": "Nouveau budget",
+        "empty": "Aucun budget",
+        "emptyHint": "Aucun budget alloué dans votre périmètre.",
+        "colTerritoire": "Territoire",
+        "colExercice": "Exercice",
+        "colAlloue": "Alloué",
+        "colUtilisation": "Utilisation",
+        "colSolde": "Solde",
+        "modalTitle": "Nouveau budget",
+        "exercice": "Exercice",
+        "montant": "Montant alloué (XAF)",
+        "requiredError": "Territoire, exercice et un montant positif sont obligatoires.",
+        "createError": "Échec de la création"
+      },
+      "partenaires": {
+        "newPartenaire": "Nouveau partenaire",
+        "empty": "Aucun partenaire financier",
+        "colNom": "Nom",
+        "colType": "Type",
+        "colContact": "Contact",
+        "colStatut": "Statut",
+        "modalTitleNew": "Nouveau partenaire financier",
+        "modalTitleEdit": "Modifier le partenaire",
+        "nom": "Nom",
+        "type": "Type",
+        "email": "Email",
+        "telephone": "Téléphone",
+        "requiredError": "Le nom est obligatoire.",
+        "saveError": "Échec de l'enregistrement"
+      },
+      "subventions": {
+        "newSubvention": "Enregistrer une subvention / un don",
+        "empty": "Aucune subvention",
+        "emptyHint": "Aucune subvention ou aucun don enregistré.",
+        "colReception": "Réception",
+        "colPartenaire": "Partenaire",
+        "colType": "Type",
+        "colTerritoire": "Territoire",
+        "colMontant": "Montant",
+        "colStatut": "Statut",
+        "modalTitle": "Enregistrer une subvention ou un don",
+        "partenaire": "Partenaire",
+        "type": "Type",
+        "typeSubvention": "Subvention",
+        "typeDon": "Don",
+        "dateReception": "Date de réception",
+        "territoireBeneficiaire": "Territoire bénéficiaire",
+        "territoireHint": "Laisser vide pour une subvention nationale.",
+        "montant": "Montant (XAF)",
+        "requiredError": "Partenaire, montant positif et date sont obligatoires.",
+        "saveError": "Échec de l'enregistrement"
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "seeAll": "Voir toutes les notifications",
+    "empty": "Aucune notification",
+    "realtimeOn": "Temps réel actif",
+    "realtimeConnecting": "Connexion temps réel…",
+    "realtimeOff": "Temps réel indisponible — actualisation périodique"
+  },
+  "nav": {
+    "groups": {
+      "pilotage": "Pilotage",
+      "territoire": "Territoire",
+      "formation": "Formation",
+      "finances": "Finances",
+      "production_suivi": "Production & suivi",
+      "logistique": "Logistique",
+      "communication": "Communication",
+      "administration": "Administration",
+      "administration_systeme": "Administration système",
+      "site": "Site"
+    },
+    "items": {
+      "dashboard": "Tableau de bord",
+      "carte": "Carte du Cameroun",
+      "incidents": "Incidents",
+      "territoires": "Territoires",
+      "apprenants": "Apprenants",
+      "encadreurs": "Encadreurs",
+      "sessions": "Sessions",
+      "presences": "Présences",
+      "resultats": "Résultats",
+      "attestations": "Attestations",
+      "budget_depenses": "Dépenses",
+      "budget_finances": "Budgets & partenaires",
+      "productions": "Productions",
+      "rapports": "Rapports",
+      "materiel": "Matériel",
+      "communication_diffusion": "Diffuser une notification",
+      "communication_circulaires": "Circulaires",
+      "communication_reunions": "Réunions",
+      "communication_bibliotheque": "Bibliothèque",
+      "admin_overview": "Vue d'ensemble",
+      "admin_audit": "Journal d'audit",
+      "admin_users": "Utilisateurs",
+      "admin_roles": "Rôles & permissions",
+      "admin_imports": "Imports en masse",
+      "admin_technique": "Vue technique",
+      "admin_parametres": "Paramètres système",
+      "admin_feature_flags": "Feature flags",
+      "admin_maintenance": "Mode maintenance",
+      "admin_integrations": "Intégrations externes",
+      "admin_sauvegardes": "Sauvegardes",
+      "site_actualites": "Actualités",
+      "site_faq": "FAQ",
+      "site_equipe": "Équipe",
+      "site_partenaires": "Partenaires",
+      "site_evenements": "Événements",
+      "site_catalogue_formations": "Catalogue des formations",
+      "site_candidatures": "Candidatures",
+      "site_contact": "Messages"
+    }
+  }
+}

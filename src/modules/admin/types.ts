@@ -57,3 +57,44 @@ export interface CreateUtilisateurRequest {
   territoireId: string;
   telephone?: string;
 }
+
+export type MaintenanceStatut = 'PLANIFIEE' | 'ACTIVE' | 'TERMINEE';
+
+export interface ModeMaintenance {
+  id: string;
+  serviceCode: string;
+  statut: MaintenanceStatut;
+  message: string;
+  dateDebutPrevue: string | null;
+  fenetrePrealerteHeures: number | null;
+  dateFinPrevue: string | null;
+  activePar: string | null;
+  dateActivation: string | null;
+  dateDesactivation: string | null;
+}
+
+export interface SetMaintenanceRequest {
+  statut: MaintenanceStatut;
+  message: string;
+  dateDebutPrevue?: string;
+  fenetrePrealerteHeures?: number;
+  dateFinPrevue?: string;
+}
+
+export interface IntegrationExterne {
+  id: string;
+  code: string;
+  config: Record<string, unknown>;
+  actif: boolean;
+  derniereVerification: string | null;
+}
+
+export interface Sauvegarde {
+  id: string;
+  dateDeclenchement: string;
+  type: string;
+  statut: string;
+  tailleMo: number | null;
+  dateTestRestauration: string | null;
+  declenchePar: string | null;
+}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,6 +12,7 @@ import { profileService } from '../services/profileService';
  * - le changement volontaire depuis l'écran de profil
  */
 export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
+  const { t } = useTranslation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -23,11 +25,11 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
     setError(null);
 
     if (newPassword.length < 8) {
-      setError('Le nouveau mot de passe doit contenir au moins 8 caractères.');
+      setError(t('auth.changePassword.errors.tooShort'));
       return;
     }
     if (newPassword !== confirmPassword) {
-      setError('Les deux mots de passe ne correspondent pas.');
+      setError(t('auth.changePassword.errors.mismatch'));
       return;
     }
 
@@ -40,11 +42,7 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
       setConfirmPassword('');
       onSuccess?.();
     } catch (err) {
-      const message =
-        err && typeof err === 'object' && 'response' in err
-          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
-          : undefined;
-      setError(message ?? 'Mot de passe actuel incorrect ou erreur serveur.');
+      setError(err instanceof Error ? err.message : t('auth.changePassword.errors.generic'));
     } finally {
       setLoading(false);
     }
@@ -54,7 +52,7 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
     return (
       <div className="flex flex-col items-center text-center gap-3 py-6">
         <CheckCircle className="h-10 w-10 text-green-500" />
-        <p className="text-sm font-medium text-kct-noir dark:text-gray-100">Mot de passe changé avec succès.</p>
+        <p className="text-sm font-medium text-kct-noir dark:text-gray-100">{t('auth.changePassword.success')}</p>
       </div>
     );
   }
@@ -62,7 +60,7 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="currentPassword">Mot de passe actuel</Label>
+        <Label htmlFor="currentPassword">{t('auth.changePassword.currentPassword')}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -77,7 +75,7 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="newPassword">Nouveau mot de passe</Label>
+        <Label htmlFor="newPassword">{t('auth.changePassword.newPassword')}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -90,11 +88,11 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
             className="pl-10"
           />
         </div>
-        <p className="text-xs text-gray-400">Au moins 8 caractères.</p>
+        <p className="text-xs text-gray-400">{t('auth.changePassword.hint')}</p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirmer le nouveau mot de passe</Label>
+        <Label htmlFor="confirmPassword">{t('auth.changePassword.confirmPassword')}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
@@ -117,10 +115,10 @@ export function ChangePasswordForm({ onSuccess }: { onSuccess?: () => void }) {
         {loading ? (
           <>
             <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-            Changement en cours...
+            {t('auth.changePassword.submitting')}
           </>
         ) : (
-          'Changer le mot de passe'
+          t('auth.changePassword.submit')
         )}
       </Button>
     </form>

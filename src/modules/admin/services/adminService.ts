@@ -7,6 +7,10 @@ import type {
   RoleDto,
   PermissionDto,
   CreateUtilisateurRequest,
+  ModeMaintenance,
+  SetMaintenanceRequest,
+  IntegrationExterne,
+  Sauvegarde,
 } from '../types';
 
 /**
@@ -90,5 +94,67 @@ export const adminService = {
   /** Retire une permission d'un rôle. */
   async removePermission(roleId: string, permissionId: string): Promise<void> {
     await apiClient.delete(`/iam/roles/${roleId}/permissions/${permissionId}`);
+  },
+
+  // ==================== DÉLÉGATION INDIVIDUELLE (§3) ====================
+
+  /** Permissions déléguées individuellement à un utilisateur, hors permissions de rôle. */
+  async getUserOverrides(utilisateurId: string): Promise<string[]> {
+    const { data } = await apiClient.get<string[]>(`/iam/roles/utilisateurs/${utilisateurId}/permissions`);
+    return data;
+  },
+
+  /** Délègue une permission individuelle à un utilisateur — nécessite permission:override. */
+  async assignUserOverride(utilisateurId: string, permissionId: string): Promise<void> {
+    await apiClient.post(`/iam/roles/utilisateurs/${utilisateurId}/permissions/${permissionId}`);
+  },
+
+  /** Retire une permission déléguée individuellement — nécessite permission:override. */
+  async removeUserOverride(utilisateurId: string, permissionId: string): Promise<void> {
+    await apiClient.delete(`/iam/roles/utilisateurs/${utilisateurId}/permissions/${permissionId}`);
+  },
+
+  // ==================== ADMINISTRATION TECHNIQUE (§6.5, §6.8) ====================
+
+  /** État de maintenance de tous les services connus (GLOBAL inclus). */
+  async getMaintenance(): Promise<ModeMaintenance[]> {
+    const { data } = await apiClient.get<ModeMaintenance[]>('/admin/maintenance');
+    return data;
+  },
+
+  /** Planifie, active ou termine la maintenance d'un service ('GLOBAL' pour tous). */
+  async setMaintenance(serviceCode: string, req: SetMaintenanceRequest): Promise<ModeMaintenance> {
+    const { data } = await apiClient.put<ModeMaintenance>(`/admin/maintenance/${serviceCode}`, req);
+    return data;
+  },
+
+  /** Bannières de maintenance à afficher — accessible à tout utilisateur authentifié. */
+  async getBannieresMaintenance(): Promise<ModeMaintenance[]> {
+    const { data } = await apiClient.get<ModeMaintenance[]>('/maintenance/bannieres');
+    return data;
+  },
+
+  /** Intégrations externes configurées (SMS, email...). */
+  async getIntegrations(): Promise<IntegrationExterne[]> {
+    const { data } = await apiClient.get<IntegrationExterne[]>('/admin/integrations');
+    return data;
+  },
+
+  /** Crée ou met à jour la configuration d'une intégration externe. */
+  async setIntegration(code: string, config: Record<string, unknown>, actif: boolean): Promise<IntegrationExterne> {
+    const { data } = await apiClient.put<IntegrationExterne>(`/admin/integrations/${code}`, { config, actif });
+    return data;
+  },
+
+  /** Historique des sauvegardes (automatiques et manuelles). */
+  async getSauvegardes(): Promise<Sauvegarde[]> {
+    const { data } = await apiClient.get<Sauvegarde[]>('/admin/sauvegardes');
+    return data;
+  },
+
+  /** Déclenche une sauvegarde manuelle. */
+  async declencherSauvegarde(): Promise<Sauvegarde> {
+    const { data } = await apiClient.post<Sauvegarde>('/admin/sauvegardes/declencher');
+    return data;
   },
 };

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSessionsPage } from '../hooks/useSessionsPage';
 import { useAuthContext } from '@/shared/auth/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,10 +12,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Lock, Pencil, Loader2, CalendarCheck, Search } from 'lucide-react';
 import type { SessionFormation, CreateSessionRequest } from '../types';
 import { TerritoireSelect } from './TerritoireSelect';
+import { EncadreurPicker, FilierePicker } from './SessionFormFields';
 import { PaginationControls } from '@/shared/components/PaginationControls';
 
 const EMPTY_FORM = (territoireId: string): CreateSessionRequest => ({
-  territoireId, encadreurId: '', dateDebut: new Date().toISOString().split('T')[0], statut: 'planifiee',
+  territoireId, lieu: '', dateDebut: new Date().toISOString().split('T')[0], statut: 'planifiee',
 });
 
 /**
@@ -25,10 +27,11 @@ const EMPTY_FORM = (territoireId: string): CreateSessionRequest => ({
  */
 export function SessionList() {
   const { user } = useAuthContext();
+  const navigate = useNavigate();
   const {
     sessions, loading, error, page, setPage, totalPages, totalElements, size,
     search, setSearch, create, update, cloturer,
-  } = useSessionsPage(user?.territoireId);
+  } = useSessionsPage(user?.territoireId ?? undefined);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<SessionFormation | null>(null);
@@ -44,21 +47,24 @@ export function SessionList() {
     setEditing(s);
     setForm({
       territoireId: s.territoireId,
-      encadreurId: s.encadreurId,
-      dateDebut: s.dateDebut,
+      encadreurId: s.encadreurId ?? undefined,
+      dateDebut: s.dateDebut ?? undefined,
       dateFin: s.dateFin ?? undefined,
-      lieu: s.lieu ?? undefined,
+      lieu: s.lieu ?? '',
       programme: s.programme ?? undefined,
+      filiereId: s.filiereId ?? undefined,
       statut: s.statut,
     });
     setDialogOpen(true);
   };
 
   const handleSubmit = async () => {
+    if (!form.lieu.trim()) return;
+    const payload: CreateSessionRequest = { ...form, dateFin: form.dateFin || undefined, encadreurId: form.encadreurId || undefined };
     if (editing) {
-      await update(editing.id, form);
+      await update(editing.id, payload);
     } else {
-      await create(form);
+      await create(payload);
     }
     setDialogOpen(false);
   };
@@ -94,10 +100,8 @@ export function SessionList() {
                 value={form.territoireId}
                 onChange={(id) => setForm({ ...form, territoireId: id })}
               />
-              <div className="space-y-2">
-                <Label htmlFor="sess-encadreur">Encadreur ID</Label>
-                <Input id="sess-encadreur" value={form.encadreurId} onChange={(e) => setForm({ ...form, encadreurId: e.target.value })} />
-              </div>
+              <EncadreurPicker territoireId={form.territoireId} value={form.encadreurId} onChange={(id) => setForm({ ...form, encadreurId: id })} />
+              <FilierePicker value={form.filiereId} onChange={(id) => setForm({ ...form, filiereId: id })} />
               <div className="space-y-2">
                 <Label htmlFor="sess-debut">Date de début</Label>
                 <Input id="sess-debut" type="date" value={form.dateDebut} onChange={(e) => setForm({ ...form, dateDebut: e.target.value })} />
@@ -107,8 +111,8 @@ export function SessionList() {
                 <Input id="sess-fin" type="date" value={form.dateFin ?? ''} onChange={(e) => setForm({ ...form, dateFin: e.target.value })} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="sess-lieu">Lieu</Label>
-                <Input id="sess-lieu" value={form.lieu ?? ''} onChange={(e) => setForm({ ...form, lieu: e.target.value })} />
+                <Label htmlFor="sess-lieu">Lieu *</Label>
+                <Input id="sess-lieu" value={form.lieu} onChange={(e) => setForm({ ...form, lieu: e.target.value })} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="sess-programme">Programme</Label>
@@ -166,6 +170,9 @@ export function SessionList() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
+                      <Button variant="ghost" size="sm" onClick={() => navigate(`/sessions/${s.id}`)}>
+                        Ouvrir
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => openEdit(s)}>
                         <Pencil className="h-4 w-4 text-gray-500" />
                       </Button>

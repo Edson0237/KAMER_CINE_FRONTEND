@@ -25,7 +25,7 @@ export function EncadreurList() {
   const {
     encadreurs, loading, error, page, setPage, totalPages, totalElements, size,
     search, setSearch, create, update, remove,
-  } = useEncadreursPage(user?.territoireId);
+  } = useEncadreursPage(user?.territoireId ?? undefined);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Encadreur | null>(null);

@@ -1,4 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useRealtime } from '@/shared/realtime/RealtimeProvider';
+import { useTranslation } from 'react-i18next';
 import { Bell, Check, Loader2, BellOff } from 'lucide-react';
 import { useNotifications } from '@/modules/notification/hooks/useNotifications';
 import { cn } from '@/lib/utils';
@@ -13,6 +16,9 @@ import { cn } from '@/lib/utils';
 export function NotificationBell() {
   const { notifications, unreadCount, loading, markAsRead } = useNotifications();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const { status } = useRealtime();
+  const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,6 +45,10 @@ export function NotificationBell() {
         title="Notifications"
       >
         <Bell className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+        <span
+          className={cn('absolute bottom-1.5 right-1.5 h-2 w-2 rounded-full ring-2 ring-white dark:ring-gray-900', status === 'connected' ? 'bg-kct-green' : status === 'connecting' ? 'bg-kct-yellow' : 'bg-gray-300')}
+          title={status === 'connected' ? t('notifications.realtimeOn') : status === 'connecting' ? t('notifications.realtimeConnecting') : t('notifications.realtimeOff')}
+        />
         {unreadCount > 0 && (
           <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 flex items-center justify-center bg-kct-red text-white text-[10px] font-bold rounded-full">
             {unreadCount > 9 ? '9+' : unreadCount}
@@ -49,7 +59,7 @@ export function NotificationBell() {
       {open && (
         <div className="absolute right-0 mt-2 w-80 max-h-96 overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-lg z-50">
           <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 px-4 py-2.5 flex items-center justify-between">
-            <span className="text-sm font-semibold text-kct-noir dark:text-gray-100">Notifications</span>
+            <span className="text-sm font-semibold text-kct-noir dark:text-gray-100">{t('notifications.title')}</span>
             {unreadCount > 0 && (
               <span className="text-xs text-kct-gold font-medium">{unreadCount} non lue{unreadCount > 1 ? 's' : ''}</span>
             )}
@@ -64,7 +74,7 @@ export function NotificationBell() {
           {!loading && notifications.length === 0 && (
             <div className="flex flex-col items-center justify-center py-10 text-gray-400 dark:text-gray-500">
               <BellOff className="h-8 w-8 mb-2" />
-              <p className="text-sm">Aucune notification</p>
+              <p className="text-sm">{t('notifications.empty')}</p>
             </div>
           )}
 
@@ -105,6 +115,12 @@ export function NotificationBell() {
               })}
             </ul>
           )}
+          <button
+            onClick={() => { setOpen(false); navigate('/notifications'); }}
+            className="sticky bottom-0 w-full border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-2.5 text-center text-xs font-medium text-kct-gold hover:bg-gray-50 dark:hover:bg-gray-800"
+          >
+            {t('notifications.seeAll')}
+          </button>
         </div>
       )}
     </div>
